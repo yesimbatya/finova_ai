@@ -13,10 +13,9 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { db } from "@/db/index";
-import { Budgets } from "@/db/schema";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { createBudget } from "src/actions";
 
 function CreateBudget({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
@@ -31,18 +30,14 @@ function CreateBudget({ refreshData }) {
    * Used to Create New Budget
    */
   const onCreateBudget = async () => {
-    const result = await db
-      .insert(Budgets)
-      .values({
-        name: name,
-        amount: amount,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        icon: emojiIcon,
-      })
-      .returning({ insertedId: Budgets.id });
+    await createBudget(
+      name,
+      amount,
+      user?.primaryEmailAddress?.emailAddress,
+      emojiIcon
+    );
 
     if (result) {
-      refreshData();
       toast("New Budget Created!");
     }
   };

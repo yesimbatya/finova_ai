@@ -13,12 +13,11 @@ import {
 import EmojiPicker from "emoji-picker-react";
 import { Button } from "src/components/ui/button";
 import { Input } from "src/components/ui/input";
-import { db } from "@/db/index";
-import { Incomes } from "@/db/schema";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { createIncome } from "src/actions";
 
-function CreateIncomes({ refreshData }) {
+function CreateIncomes({}) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
@@ -31,18 +30,13 @@ function CreateIncomes({ refreshData }) {
    * Used to Create New Budget
    */
   const onCreateIncomes = async () => {
-    const result = await db
-      .insert(Incomes)
-      .values({
-        name: name,
-        amount: amount,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        icon: emojiIcon,
-      })
-      .returning({ insertedId: Incomes.id });
+    const result = createIncome(
+      name,
+      amount,
+      user.primaryEmailAddress.emailAddress
+    );
 
     if (result) {
-      refreshData();
       toast("New Income Source Created!");
     }
   };

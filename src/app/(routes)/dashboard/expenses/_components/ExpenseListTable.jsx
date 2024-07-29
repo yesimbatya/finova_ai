@@ -1,20 +1,13 @@
-import { db } from "@/db/index";
-import { Expenses } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { Trash } from "lucide-react";
-import React from "react";
+"use client";
+
 import { toast } from "sonner";
 
-function ExpenseListTable({ expensesList, refreshData }) {
-  const deleteExpense = async (expense) => {
-    const result = await db
-      .delete(Expenses)
-      .where(eq(Expenses.id, expense.id))
-      .returning();
+function ExpenseListTable({ expensesList }) {
+  const handleDelete = async (expense) => {
+    await deleteExpense(expense.id);
 
     if (result) {
       toast("Expense Deleted!");
-      refreshData();
     }
   };
   return (
@@ -27,12 +20,15 @@ function ExpenseListTable({ expensesList, refreshData }) {
         <h2 className="font-bold">Action</h2>
       </div>
       {expensesList.map((expenses, index) => (
-        <div className="grid grid-cols-4 bg-slate-50 rounded-bl-xl rounded-br-xl p-2">
+        <div
+          key={index}
+          className="grid grid-cols-4 bg-slate-50 rounded-bl-xl rounded-br-xl p-2"
+        >
           <h2>{expenses.name}</h2>
           <h2>{expenses.amount}</h2>
           <h2>{expenses.createdAt}</h2>
           <h2
-            onClick={() => deleteExpense(expenses)}
+            onClick={() => handleDelete(expenses)}
             className="text-red-500 cursor-pointer"
           >
             Delete

@@ -1,21 +1,14 @@
-"use client";
 import { db } from "@/db/index";
 import { Budgets, Expenses } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
-import React, { useEffect, useState } from "react";
 import ExpenseListTable from "./_components/ExpenseListTable";
-import { useUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 
-function ExpensesScreen() {
-  const [expensesList, setExpensesList] = useState([]);
-  const { user } = useUser();
-
-  useEffect(() => {
-    user && getAllExpenses();
-  }, [user]);
+async function ExpensesScreen() {
+  const user = await currentUser();
 
   const getAllExpenses = async () => {
-    const result = await db
+    return db
       .select({
         id: Expenses.id,
         name: Expenses.name,
@@ -26,19 +19,15 @@ function ExpensesScreen() {
       .rightJoin(Expenses, eq(Budgets.id, Expenses.budgetId))
       .where(eq(Budgets.createdBy, user?.primaryEmailAddress.emailAddress))
       .orderBy(desc(Expenses.id));
-    setExpensesList(result);
   };
 
-  console.log({ expensesList });
+  const result = await getAllExpenses();
 
   return (
     <div className="p-10">
       <h2 className="font-bold text-3xl">My Expenses</h2>
 
-      <ExpenseListTable
-        refreshData={() => getAllExpenses()}
-        expensesList={expensesList}
-      />
+      <ExpenseListTable expensesList={result} />
     </div>
   );
 }
