@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
-import CardInfo from "./_components/CardInfo";
+import CardInfo from "./_components/Cardinfo";
 import { db } from "@/db/index";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
 import { Budgets, Expenses, Incomes } from "@/db/schema";
@@ -108,7 +108,9 @@ function Dashboard() {
   return (
     <div className="p-8 bg-">
       <h2 className="font-bold text-4xl">Hi, {user?.fullName} ❤️</h2>
-      <p className="text-gray-500">Let's manage your expenses with Finova</p>
+      <p className="text-gray-500">
+        Let&apos;s manage your expenses with Finova
+      </p>
 
       <CardInfo budgetList={budgetList} incomeList={incomeList} />
       <div className="grid grid-cols-1 lg:grid-cols-3 mt-6 gap-5">
