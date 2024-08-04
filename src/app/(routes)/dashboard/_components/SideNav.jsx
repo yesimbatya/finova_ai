@@ -32,12 +32,6 @@ function SideNav() {
       icon: "🐷", // Replaced icon with emoji
       path: "/dashboard/budgets",
     },
-    {
-      id: 5,
-      name: "AI-Investments",
-      icon: "📈", // Replaced icon with emoji
-      path: "/dashboard/investments",
-    },
   ];
 
   const path = usePathname();
@@ -48,9 +42,20 @@ function SideNav() {
 
   return (
     <div className="h-screen p-5 border shadow-sm">
-      <div className="flex flex-row items-center">
-        <Image src={"/logo.svg"} alt="logo" width={40} height={25} />
-        <span className="text-purple-600 font-bold text-xl">Finova</span>
+      <div className="flex items-center space-x-4 bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-xl shadow-lg">
+        <div className="relative">
+          {/* Removed the gradient background and blur effect */}
+          <Image
+            src={"/logo.svg"}
+            alt="Finova logo"
+            width={50}
+            height={50}
+            className="relative rounded-full transition-all duration-300 hover:scale-110"
+          />
+        </div>
+        <span className="text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600 tracking-wide">
+          Finova
+        </span>
       </div>
       <div className="mt-5">
         {menuList.map((menu, index) => (

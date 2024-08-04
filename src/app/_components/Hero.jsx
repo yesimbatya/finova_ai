@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { ContainerScroll } from "./container-scroll-animation";
 
 function Hero() {
@@ -28,6 +29,16 @@ function Hero() {
           />
         </ContainerScroll>
       </div>
+      <div className="w-full border-t border-gray-300 my-8"></div>
+      <footer className="mb-8 text-center text-sm text-gray-500">
+        Built with ❤️ by{" "}
+        <Link
+          href="https://github.com/yesimbatya"
+          className="text-blue-500 hover:underline"
+        >
+          Yessimkhan
+        </Link>
+      </footer>
     </section>
   );
 }

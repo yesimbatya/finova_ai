@@ -3,6 +3,7 @@
 import formatNumber from "@/utils/index";
 import getFinancialAdvice from "@/utils/getFinancialAdvice";
 import React, { useEffect, useState } from "react";
+import Chat from "./ChatInterface";
 
 function CardInfo({ budgetList, incomeList }) {
   const [totalBudget, setTotalBudget] = useState(0);
@@ -55,25 +56,12 @@ function CardInfo({ budgetList, incomeList }) {
     <div>
       {budgetList?.length > 0 ? (
         <div>
-          <div className="p-7 border mt-4 -mb-1 rounded-2xl flex items-center justify-between">
-            <div className="">
-              <div className="flex mb-2 flex-row space-x-1 items-center ">
-                <h2 className="text-md ">Finova</h2>
-                <span
-                  className="rounded-full text-white w-10 h-10 p-2
-    bg-gradient-to-r
-    from-pink-500
-    via-red-500
-    to-yellow-500
-    background-animate flex items-center justify-center"
-                >
-                  ✨
-                </span>
-              </div>
-              <h2 className="font-light text-md">
-                {financialAdvice || "Loading financial advice..."}
-              </h2>
-            </div>
+          <div className="p-0 border mt-0 mb-0 rounded-2xl flex items-center justify-between">
+            <Chat
+              totalBudget={totalBudget}
+              totalIncome={totalIncome}
+              totalSpend={totalSpend}
+            />
           </div>
 
           <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

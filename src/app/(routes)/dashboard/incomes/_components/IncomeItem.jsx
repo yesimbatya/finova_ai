@@ -3,12 +3,11 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { deleteIncome } from "src/actions";
 
 function IncomeItem({ budget }) {
   const router = useRouter();
-
   const calculateProgressPerc = () => {
     const perc = (budget.totalSpend / budget.amount) * 100;
     return perc > 100 ? 100 : perc.toFixed(2);
