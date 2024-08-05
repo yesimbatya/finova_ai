@@ -16,8 +16,10 @@ import { Input } from "src/components/ui/input";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
 import { createIncome } from "src/actions";
+import { useRouter } from "next/navigation";
 
 function CreateIncomes({}) {
+  const router = useRouter();
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
@@ -30,14 +32,16 @@ function CreateIncomes({}) {
    * Used to Create New Budget
    */
   const onCreateIncomes = async () => {
-    const result = createIncome(
+    const result = await createIncome(
       name,
       amount,
-      user.primaryEmailAddress.emailAddress
+      user.primaryEmailAddress.emailAddress,
+      emojiIcon
     );
 
     if (result) {
       toast("New Income Source Created!");
+      router.refresh(); // Trigger a refresh of the current route
     }
   };
   return (
