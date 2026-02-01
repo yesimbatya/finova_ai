@@ -2,67 +2,125 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { db } from "@/db/index";
-import { Budgets, Expenses } from "@/db/schema";
-import { Loader } from "lucide-react";
-import moment from "moment";
-import React, { useState } from "react";
+import { Loader2, Plus, Receipt } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+import { createExpense } from "src/actions";
 
-function AddExpense({ budgetId, user, refreshData }) {
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState();
+/**
+ * AddExpense Component
+ * Dieter Rams: "Good design makes a product useful"
+ */
+
+function AddExpense({ budgetId, refreshData }) {
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
+
   /**
-   * Used to Add New Expense
+   * Validates and adds a new expense using server action
    */
   const addNewExpense = async () => {
-    setLoading(true);
-    const result = await db
-      .insert(Expenses)
-      .values({
-        name: name,
-        amount: amount,
-        budgetId: budgetId,
-        createdAt: moment().format("DD/MM/yyy"),
-      })
-      .returning({ insertedId: Budgets.id });
-
-    setAmount("");
-    setName("");
-    if (result) {
-      setLoading(false);
-      refreshData();
-      toast("New Expense Added!");
+    // Client-side validation
+    if (!name.trim()) {
+      toast.error("Please enter an expense name");
+      return;
     }
-    setLoading(false);
+
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await createExpense(name.trim(), amount, budgetId);
+
+      if (result.success) {
+        setAmount("");
+        setName("");
+        toast.success("Expense added successfully!");
+        if (refreshData) {
+          refreshData();
+        }
+      } else {
+        toast.error(result.error || "Failed to add expense");
+      }
+    } catch (error) {
+      console.error("Error adding expense:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && name.trim() && amount) {
+      addNewExpense();
+    }
+  };
+
   return (
-    <div className="border p-5 rounded-2xl">
-      <h2 className="font-bold text-lg">Add Expense</h2>
-      <div className="mt-2">
-        <h2 className="text-black font-medium my-1">Expense Name</h2>
-        <Input
-          placeholder="e.g. Bedroom Decor"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+    <div className="bg-card border border-border p-6 rounded-xl">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-2 bg-expense/10 rounded-lg">
+          <Receipt className="h-5 w-5 text-expense" />
+        </div>
+        <h2 className="font-semibold text-lg">Add Expense</h2>
       </div>
-      <div className="mt-2">
-        <h2 className="text-black font-medium my-1">Expense Amount</h2>
-        <Input
-          placeholder="e.g. 1000"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
+
+      <div className="space-y-4">
+        <div>
+          <label className="text-sm font-medium text-foreground mb-2 block">
+            Expense Name
+          </label>
+          <Input
+            placeholder="e.g. Coffee, Groceries, Uber"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyPress={handleKeyPress}
+            maxLength={100}
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-foreground mb-2 block">
+            Amount ($)
+          </label>
+          <Input
+            type="number"
+            placeholder="e.g. 25.00"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            onKeyPress={handleKeyPress}
+            min="0.01"
+            step="0.01"
+          />
+        </div>
+
+        <Button
+          disabled={!(name.trim() && amount) || loading}
+          onClick={addNewExpense}
+          className="w-full"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Adding...
+            </>
+          ) : (
+            <>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Expense
+            </>
+          )}
+        </Button>
       </div>
-      <Button
-        disabled={!(name && amount) || loading}
-        onClick={() => addNewExpense()}
-        className="mt-3 w-full rounded-full"
-      >
-        {loading ? <Loader className="animate-spin" /> : "Add New Expense"}
-      </Button>
+
+      <p className="text-xs text-muted-foreground mt-3 text-center">
+        Press Enter to quickly add expenses
+      </p>
     </div>
   );
 }

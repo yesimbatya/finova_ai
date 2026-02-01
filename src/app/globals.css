@@ -2,60 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Dieter Rams-Inspired Design System for Finova
+ * "Less, but better" - Applied to Finance
+ *
+ * Principles:
+ * - Neutral, timeless color palette
+ * - Generous whitespace
+ * - Clear typographic hierarchy
+ * - Functional minimalism
+ * - Precision in every detail
+ */
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    /* Core Neutrals - Braun-inspired grayscale */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+
+    /* Surface hierarchy */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 0 0% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --popover-foreground: 0 0% 8%;
+
+    /* Primary - Refined charcoal (Rams' signature) */
+    --primary: 0 0% 12%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+
+    /* Secondary - Warm gray */
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 12%;
+
+    /* Muted - Subtle backgrounds */
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    /* Accent - Minimal highlight */
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 12%;
+
+    /* Semantic colors - Restrained */
+    --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --success: 145 60% 40%;
+    --success-foreground: 0 0% 98%;
+    --warning: 40 90% 50%;
+    --warning-foreground: 0 0% 8%;
+
+    /* Borders - Subtle definition */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 12%;
+
+    /* Radius - Sharp, precise corners */
+    --radius: 0.375rem;
+
+    /* Chart colors - Functional, distinct */
+    --chart-1: 0 0% 12%;
+    --chart-2: 0 0% 45%;
+    --chart-3: 145 50% 45%;
+    --chart-4: 0 60% 50%;
+    --chart-5: 40 80% 50%;
+
+    /* Finance-specific semantic colors */
+    --income: 145 55% 42%;
+    --expense: 0 60% 50%;
+    --budget: 220 60% 50%;
+    --savings: 180 50% 45%;
+
+    /* Spacing scale (8px base grid) */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --background: 0 0% 6%;
+    --foreground: 0 0% 94%;
+
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 94%;
+    --popover: 0 0% 9%;
+    --popover-foreground: 0 0% 94%;
+
+    --primary: 0 0% 94%;
+    --primary-foreground: 0 0% 6%;
+
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 94%;
+
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 0 0% 14%;
+    --accent-foreground: 0 0% 94%;
+
+    --destructive: 0 55% 45%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    --border: 0 0% 16%;
+    --input: 0 0% 16%;
+    --ring: 0 0% 85%;
+
+    --chart-1: 0 0% 85%;
+    --chart-2: 0 0% 55%;
+    --chart-3: 145 45% 50%;
+    --chart-4: 0 55% 55%;
+    --chart-5: 40 70% 55%;
   }
 }
 
@@ -63,7 +124,136 @@
   * {
     @apply border-border;
   }
+
+  html {
+    @apply antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     @apply bg-background text-foreground;
+    @apply text-[15px] leading-relaxed;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Typography - Clear hierarchy */
+  h1 {
+    @apply text-3xl font-semibold tracking-tight text-foreground;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    @apply text-xl font-medium tracking-tight text-foreground;
+    letter-spacing: -0.015em;
+  }
+
+  h3 {
+    @apply text-lg font-medium text-foreground;
+  }
+
+  p {
+    @apply text-muted-foreground leading-relaxed;
+  }
+
+  /* Focus states - Visible but elegant */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Selection - Subtle */
+  ::selection {
+    @apply bg-primary/10 text-foreground;
+  }
+}
+
+@layer components {
+  /* Metric display - Finance specific */
+  .metric-value {
+    @apply text-2xl font-semibold tracking-tight tabular-nums;
+    font-feature-settings: "tnum" 1;
+  }
+
+  .metric-label {
+    @apply text-xs font-medium uppercase tracking-wider text-muted-foreground;
+  }
+
+  .metric-delta-positive {
+    @apply text-[hsl(var(--income))] text-sm font-medium;
+  }
+
+  .metric-delta-negative {
+    @apply text-[hsl(var(--expense))] text-sm font-medium;
+  }
+
+  /* Grid system */
+  .grid-dashboard {
+    @apply grid gap-6;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  /* Dividers */
+  .divider {
+    @apply h-px w-full bg-border;
+  }
+
+  .divider-vertical {
+    @apply w-px h-full bg-border;
+  }
+}
+
+@layer utilities {
+  /* Animation - Subtle, functional */
+  .transition-base {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .transition-fast {
+    @apply transition-all duration-150 ease-out;
+  }
+
+  /* Shadows - Minimal, purposeful */
+  .shadow-subtle {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.03),
+                0 1px 3px 0 rgb(0 0 0 / 0.04);
+  }
+
+  .shadow-elevated {
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 0.03),
+                0 4px 12px 0 rgb(0 0 0 / 0.06);
+  }
+
+  /* Scrollbar - Minimal */
+  .scrollbar-minimal {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-minimal::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-minimal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-minimal::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  .scrollbar-minimal::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
   }
 }

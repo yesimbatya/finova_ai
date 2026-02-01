@@ -1,57 +1,68 @@
 import Link from "next/link";
 import React from "react";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import formatNumber from "@/utils/index";
+
+/**
+ * BudgetItem - Dieter Rams Inspired
+ * "Good design makes a product understandable"
+ */
 
 function BudgetItem({ budget }) {
-  const calculateProgressPerc = () => {
-    const perc = (budget.totalSpend / budget.amount) * 100;
-    return perc > 100 ? 100 : perc.toFixed(2);
-  };
+  const spent = budget.totalSpend || 0;
+  const total = Number(budget.amount) || 0;
+  const remaining = total - spent;
+  const percentage = total > 0 ? Math.min((spent / total) * 100, 100) : 0;
+  const isOverBudget = spent > total;
+
   return (
-    <Link href={"/dashboard/expenses/" + budget?.id}>
-      <div
-        className="p-5 border rounded-2xl
-    hover:shadow-md cursor-pointer h-[170px]"
-      >
-        <div className="flex gap-2 items-center justify-between">
-          <div className="flex gap-2 items-center">
-            <h2
-              className="text-2xl p-3 px-4
-              bg-slate-100 rounded-full 
-              "
-            >
-              {budget?.icon}
-            </h2>
+    <Link href={`/dashboard/expenses/${budget?.id}`}>
+      <Card className="p-5 hover:shadow-elevated transition-shadow cursor-pointer">
+        <div className="flex items-start justify-between">
+          {/* Icon and Title */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted text-lg">
+              {budget?.icon || "📁"}
+            </div>
             <div>
-              <h2 className="font-bold">{budget.name}</h2>
-              <h2 className="text-sm text-gray-500">{budget.totalItem} Item</h2>
+              <h3 className="font-medium text-sm">{budget.name}</h3>
+              <p className="text-xs text-muted-foreground">
+                {budget.totalItem || 0} {budget.totalItem === 1 ? "item" : "items"}
+              </p>
             </div>
           </div>
-          <h2 className="font-bold text-primary text-lg"> ${budget.amount}</h2>
+
+          {/* Amount */}
+          <p className="text-sm font-semibold tabular-nums">
+            ${formatNumber(total)}
+          </p>
         </div>
 
-        <div className="mt-5">
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-xs text-slate-400">
-              ${budget.totalSpend ? budget.totalSpend : 0} Spend
-            </h2>
-            <h2 className="text-xs text-slate-400">
-              ${budget.amount - budget.totalSpend} Remaining
-            </h2>
+        {/* Progress Section */}
+        <div className="mt-4 space-y-2">
+          {/* Labels */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span className={cn(isOverBudget && "text-expense font-medium")}>
+              ${formatNumber(spent)} spent
+            </span>
+            <span className={cn(isOverBudget ? "text-expense" : "text-income")}>
+              ${formatNumber(Math.abs(remaining))} {isOverBudget ? "over" : "left"}
+            </span>
           </div>
-          <div
-            className="w-full
-              bg-slate-300 h-2 rounded-full"
-          >
+
+          {/* Progress Bar */}
+          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
             <div
-              className="
-              bg-primary h-2 rounded-full"
-              style={{
-                width: `${calculateProgressPerc()}%`,
-              }}
-            ></div>
+              className={cn(
+                "h-full rounded-full transition-all duration-500",
+                isOverBudget ? "bg-expense" : "bg-primary"
+              )}
+              style={{ width: `${percentage}%` }}
+            />
           </div>
         </div>
-      </div>
+      </Card>
     </Link>
   );
 }

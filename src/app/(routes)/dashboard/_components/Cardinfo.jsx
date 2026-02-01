@@ -1,124 +1,176 @@
 "use client";
 
+import React, { useEffect, useState, useMemo } from "react";
+import {
+  Wallet,
+  TrendingDown,
+  PiggyBank,
+  TrendingUp,
+  ArrowUpRight,
+  ArrowDownRight,
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import formatNumber from "@/utils/index";
-import getFinancialAdvice from "@/utils/getFinancialAdvice";
-import React, { useEffect, useState } from "react";
 import Chat from "./ChatInterface";
 
-function CardInfo({ budgetList, incomeList }) {
-  const [totalBudget, setTotalBudget] = useState(0);
-  const [totalSpend, setTotalSpend] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [financialAdvice, setFinancialAdvice] = useState("");
+/**
+ * CardInfo - Dieter Rams Inspired Dashboard Metrics
+ * "Good design makes a product useful"
+ *
+ * Clear financial overview with purposeful data visualization
+ */
 
-  useEffect(() => {
-    if (budgetList.length > 0 || incomeList.length > 0) {
-      CalculateCardInfo();
-    }
+function MetricCard({ label, value, icon: Icon, trend, trendValue, className }) {
+  const isPositive = trend === "up";
+  const isNegative = trend === "down";
+
+  return (
+    <Card className={cn("p-6", className)}>
+      <div className="flex items-start justify-between">
+        <div className="space-y-3">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+            {label}
+          </p>
+          <p className="text-2xl font-semibold tracking-tight tabular-nums">
+            {value}
+          </p>
+          {trendValue && (
+            <div
+              className={cn(
+                "flex items-center gap-1 text-sm font-medium",
+                isPositive && "text-income",
+                isNegative && "text-expense",
+                !isPositive && !isNegative && "text-muted-foreground"
+              )}
+            >
+              {isPositive && <ArrowUpRight className="h-3.5 w-3.5" />}
+              {isNegative && <ArrowDownRight className="h-3.5 w-3.5" />}
+              <span>{trendValue}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
+          <Icon className="h-5 w-5 text-muted-foreground" strokeWidth={1.5} />
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function SkeletonCard() {
+  return (
+    <Card className="p-6">
+      <div className="flex items-start justify-between">
+        <div className="space-y-3 flex-1">
+          <div className="h-3 w-20 rounded bg-muted animate-pulse" />
+          <div className="h-8 w-28 rounded bg-muted animate-pulse" />
+          <div className="h-4 w-16 rounded bg-muted animate-pulse" />
+        </div>
+        <div className="h-10 w-10 rounded-md bg-muted animate-pulse" />
+      </div>
+    </Card>
+  );
+}
+
+function CardInfo({ budgetList, incomeList }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Calculate metrics using useMemo for performance
+  const metrics = useMemo(() => {
+    let totalBudget = 0;
+    let totalSpend = 0;
+    let totalIncome = 0;
+
+    budgetList.forEach((item) => {
+      totalBudget += Number(item.amount) || 0;
+      totalSpend += item.totalSpend || 0;
+    });
+
+    incomeList.forEach((item) => {
+      totalIncome += item.totalAmount || 0;
+    });
+
+    const remaining = totalBudget - totalSpend;
+    const savingsRate = totalIncome > 0
+      ? ((totalIncome - totalSpend) / totalIncome * 100).toFixed(1)
+      : 0;
+
+    return {
+      totalBudget,
+      totalSpend,
+      totalIncome,
+      remaining,
+      savingsRate,
+      budgetCount: budgetList.length,
+    };
   }, [budgetList, incomeList]);
 
   useEffect(() => {
-    if (totalBudget > 0 || totalIncome > 0 || totalSpend > 0) {
-      const fetchFinancialAdvice = async () => {
-        const advice = await getFinancialAdvice(
-          totalBudget,
-          totalIncome,
-          totalSpend
-        );
-        setFinancialAdvice(advice);
-      };
-
-      fetchFinancialAdvice();
+    if (budgetList.length > 0 || incomeList.length > 0) {
+      setIsLoaded(true);
     }
-  }, [totalBudget, totalIncome, totalSpend]);
+  }, [budgetList, incomeList]);
 
-  const CalculateCardInfo = () => {
-    console.log(budgetList);
-    let totalBudget_ = 0;
-    let totalSpend_ = 0;
-    let totalIncome_ = 0;
-
-    budgetList.forEach((element) => {
-      totalBudget_ = totalBudget_ + Number(element.amount);
-      totalSpend_ = totalSpend_ + element.totalSpend;
-    });
-
-    incomeList.forEach((element) => {
-      totalIncome_ = totalIncome_ + element.totalAmount;
-    });
-
-    setTotalIncome(totalIncome_);
-    setTotalBudget(totalBudget_);
-    setTotalSpend(totalSpend_);
-  };
-
-  return (
-    <div>
-      {budgetList?.length > 0 ? (
-        <div>
-          <div className="p-0 border mt-0 mb-0 rounded-2xl flex items-center justify-between">
-            <Chat
-              totalBudget={totalBudget}
-              totalIncome={totalIncome}
-              totalSpend={totalSpend}
-            />
-          </div>
-
-          <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">Total Cash</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalBudget)}
-                </h2>
-              </div>
-              <span className="bg-purple-800 p-3 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                🏦
-              </span>
-            </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">Total Expenses</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalSpend)}
-                </h2>
-              </div>
-              <span className="bg-purple-800 p-3 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                🧾
-              </span>
-            </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm">No. Of Budget</h2>
-                <h2 className="font-bold text-2xl">{budgetList?.length}</h2>
-              </div>
-              <span className="bg-purple-800 p-3 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                💼
-              </span>
-            </div>
-            <div className="p-7 border rounded-2xl flex items-center justify-between">
-              <div>
-                <h2 className="text-sm"> Income Flow</h2>
-                <h2 className="font-bold text-2xl">
-                  ${formatNumber(totalIncome)}
-                </h2>
-              </div>
-              <span className="bg-purple-800 p-3 h-12 w-12 rounded-full text-white flex items-center justify-center">
-                💵
-              </span>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="mt-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1, 2, 3].map((item, index) => (
-            <div
-              className="h-[110px] w-full bg-slate-200 animate-pulse rounded-lg"
-              key={index}
-            ></div>
+  if (!isLoaded && budgetList.length === 0) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <SkeletonCard key={i} />
           ))}
         </div>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* AI Assistant Card */}
+      <Card className="overflow-hidden">
+        <Chat
+          totalBudget={metrics.totalBudget}
+          totalIncome={metrics.totalIncome}
+          totalSpend={metrics.totalSpend}
+        />
+      </Card>
+
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <MetricCard
+          label="Total Income"
+          value={`$${formatNumber(metrics.totalIncome)}`}
+          icon={TrendingUp}
+          trend="up"
+          trendValue="This month"
+        />
+        <MetricCard
+          label="Total Expenses"
+          value={`$${formatNumber(metrics.totalSpend)}`}
+          icon={TrendingDown}
+          trend={metrics.totalSpend > metrics.totalBudget ? "down" : undefined}
+          trendValue={
+            metrics.totalBudget > 0
+              ? `${((metrics.totalSpend / metrics.totalBudget) * 100).toFixed(0)}% of budget`
+              : undefined
+          }
+        />
+        <MetricCard
+          label="Budget Allocated"
+          value={`$${formatNumber(metrics.totalBudget)}`}
+          icon={Wallet}
+          trendValue={`${metrics.budgetCount} categories`}
+        />
+        <MetricCard
+          label="Remaining"
+          value={`$${formatNumber(metrics.remaining)}`}
+          icon={PiggyBank}
+          trend={metrics.remaining >= 0 ? "up" : "down"}
+          trendValue={
+            metrics.savingsRate > 0 ? `${metrics.savingsRate}% savings rate` : undefined
+          }
+        />
+      </div>
     </div>
   );
 }
